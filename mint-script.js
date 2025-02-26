@@ -1,15 +1,21 @@
-const setTexts = () => {
-  console.log("setTexts");
-  const navigationItems = document.getElementById("navigation-items");
-
-  const navigationH5 = navigationItems.querySelectorAll("h5");
-  for (const h5 of navigationH5) {
-    h5.setAttribute("data-text", h5.textContent);
+(function () {
+  function updateClass() {
+    document.body.classList.remove("reference-page");
+    if (window.location.pathname.includes("/docs/api-reference/")) {
+      document.body.classList.add("reference-page");
+    }
   }
-};
 
-setTexts();
+  // Handle initial load
+  updateClass();
 
-setInterval(() => {
-  setTexts();
-}, 150);
+  // Handle URL changes
+  window.addEventListener("popstate", updateClass);
+
+  // Handle SPA navigation
+  const pushState = history.pushState;
+  history.pushState = function () {
+    pushState.apply(history, arguments);
+    updateClass();
+  };
+})();
